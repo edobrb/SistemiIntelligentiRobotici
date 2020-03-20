@@ -1,0 +1,849 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+    <title>PLOW 2015 Challenge</title>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-15">
+    <meta http-equiv="pragma" content="no-store,no-cache">
+    <meta http-equiv="cache-control" content="no-cache,no-store,must-revalidate,max-age=-1">
+    <meta http-equiv="expires" content="Sun, 1 Oct 2006 08:00:00 GMT">
+    <style type="text/css">
+      body {
+        background-color: white;
+      }
+
+      table#main {
+        width: 100%;
+        text-align: center;
+      }
+
+      div.header {
+        color: #ffffff;
+        font-family: Sans-serif;
+        font-weight: bold;
+        font-size: 30pt;
+        margin: 10px 0;
+        padding: 15px;
+        text-align: center;
+        background-color: #0066cc;
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -o-border-radius: 10px;
+        -khtml-border-radius: 10px;
+        box-shadow: 0px 0px 10px #777777;
+        -moz-box-shadow: 0px 0px 10px #777777;
+        -webkit-box-shadow: 0px 0px 10px #777777;
+      }
+
+      div.section {
+        margin: 10px 0;
+        padding: 15px;
+        text-align: justify;
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -o-border-radius: 10px;
+        -khtml-border-radius: 10px;
+        box-shadow: 0px 0px 10px #777777;
+        -moz-box-shadow: 0px 0px 10px #777777;
+        -webkit-box-shadow: 0px 0px 10px #777777;
+      }
+
+      div.sechead {
+        text-align: left;
+        color: #0066cc;
+        font-family: Sans-serif;
+        font-weight: bold;
+        font-size: 28pt;
+        margin-bottom: 1em;
+      }
+
+      div.section h2 {
+        text-align: left;
+        color: #0066cc;
+        font-family: Sans-serif;
+        font-size: 18pt;
+      }
+
+      div.section h3 {
+        text-align: left;
+        color: #0066cc;
+        font-family: Sans-serif;
+        font-size: normal;
+        font-style: italic;
+      }
+
+      div.question {
+        border-left: 3px solid #0066cc;
+        padding-left: 10px;
+        margin-bottom: 25px;
+      }
+
+      div.question em {
+        font-style: italic;
+        font-weight: bold;
+      }
+
+      a:link {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      a:visited {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      a:hover {
+        color: red;
+        text-decoration: underline;
+      }
+
+      table dt {
+        font-weight: bold;
+        color: #0066cc;
+      }
+
+      table.code {
+        margin-top: 15px;
+      }
+
+      table.code tr.even {
+        background-color: #bae1ff;
+      }
+
+      table.code tr.odd {
+        background-color: #eaeaea;
+      }
+
+      table.code td {
+        padding: 10px;
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -o-border-radius: 10px;
+        -khtml-border-radius: 10px;
+      }
+
+      table.code td.category {
+        font-weight: bold;
+      }
+
+      ul li {
+        list-style-type: circle;
+      }
+
+      pre {
+        padding: 10px;
+        background-color: #eaeaea;
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -o-border-radius: 10px;
+        -khtml-border-radius: 10px;
+      }
+
+      table.code pre {
+        padding: 0;
+      }
+
+      table.code tr.even pre {
+        background-color: #bae1ff;
+        padding: 0;
+      }
+
+      strong {
+        color: #0066cc;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <table id="main">
+      <thead>
+        <tr>
+	        <th>
+            <div class="header">
+	            5th PLOW Edition (Summer 2015) - June 19, 2015
+            </div>
+	        </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+	        <td>
+            <div class="section">
+	            <div class="sechead">Contact</div>
+		          Carlo Pinciroli &lt;<a href="mailto:carlo.pinciroli@polymtl.ca" title="Carlo's e-mail">carlo.pinciroli@polymtl.ca</a>&gt;
+            </div>
+
+	          <div class="section">
+	            <div class="sechead"><a name="news">News</a></div>
+	            <dl>
+		            <dt>June 19, 2015
+		              </dt><dd>
+		                <ul>
+		                  <li>Created the first version of this website.
+		                </li></ul>
+		              </dd>
+		            
+	            </dl>
+	          </div>
+
+	          <div class="section">
+	            <div class="sechead"><a name="argos">Playground</a></div>
+              <p>
+                During the lecture we will play in a playground
+                environment. Get it here: <a href="https://www.argos-sim.info/plow2015/playground.argos">playground.argos</a>.
+              </p>
+              <p>
+                To execute ARGoS, fire up a terminal and type:
+              </p>
+              <pre>$ argos3 -c playground.argos</pre>
+            </div>
+            
+	          <div class="section">
+	            <div class="sechead"><a name="argos">ARGoS</a></div>
+	            <p>
+		            ARGoS
+		            (<a href="http://www.argos-sim.info/">http://www.argos-sim.info</a>)
+		            is a fast multi-robot simulator developed at
+		            IRIDIA. We will use it to work on the project.
+	            </p>
+              <p>
+                To install ARGoS on your laptop,
+                follow <a href="http://www.argos-sim.info/core.php">these
+                  instructions</a>.
+              </p>
+            </div>
+            
+	          <div class="section">
+	            <div class="sechead"><a name="lua">Lua</a></div>
+	            <p>
+		            To tell the robots what to do, you need to write a script. The script is written in
+		            a language called <a href="http://www.lua.org/" target="_blank">Lua</a> (v5.2). Lua is
+		            a very simple but powerful scripting language. You can find more information on the
+		            <a href="http://www.lua.org/manual/5.2/" target="_blank">Lua manual</a>. For nice
+		            tutorials, check <a href="http://luatut.com/crash_course.html" target="_blank">The Lua
+		              Crash Course</a> and the
+		            <a href="http://en.wikipedia.org/wiki/Lua_(programming_language)" target="_blank">
+		              Lua Wikipedia page</a>.
+	            </p>
+              <p>
+                The table below contains a short reference with examples. It covers just the essential
+                parts of the language you need to program the robots.
+              </p>
+	            <table class="code">
+                <tbody><tr class="even">
+                  <td class="category">Comments</td>
+                  <td>
+                    <pre>-- This is a single-line comment
+
+--[[ This is a multiline
+     comment ]]</pre>
+                  </td>
+                </tr>
+                <tr class="odd">
+                  <td class="category">Variables</td>
+                  <td>
+                    <pre>-- assignment (no need to declare a variable)
+x = 2.55   -- number
+x = "ciao" -- string
+
+-- printing on the ARGoS logger
+log("INFO: x = " .. x)
+logerr("ERROR: x = " .. x)
+
+-- NOTE: in ARGoS, the standard Lua 'print()' function does not work</pre>
+                  </td>
+                </tr>
+                <tr class="even">
+                  <td class="category">Conditionals</td>
+                  <td>
+                    <pre>-- simple if/then
+if x &gt; 3 then
+  logerr("x is too big")
+end
+
+-- if/then/elseif/else
+if x &gt; 3 then
+  logerr("x is too big")
+elseif x &lt; 3 then
+  logerr("x is too small")
+else
+  logerr("maybe I just don't like x")
+end
+
+-- checking for equality
+if x == 3 then
+  log("x is equal to 3")
+end
+
+-- checking for inequality
+if x ~= 4 then
+  log("x is different from 4")
+end
+
+-- combining conditions with OR
+if (x &gt; 3) or (x &lt; 3) then
+  logerr("x is not 3")
+end
+
+-- combining conditions with AND
+if (x &gt; 3) and (y &gt; 3) then
+  logerr("x and y are too big")
+end
+
+-- negating a condition
+if not (x &gt; 3) then
+  logerr("x is &lt;= 3")
+end</pre>
+                  </td>
+                </tr>
+                <tr class="odd">
+                  <td class="category">Loops</td>
+                  <td>
+                    <pre>-- 'while' loop to print 1 2 3 4 5
+x = 0
+while x &lt; 5 do
+  x = x + 1
+  log(x)
+end
+
+-- 'repeat until' loop to print 1 2 3 4 5
+x = 0
+repeat
+  x = x + 1
+  log(x)
+until x == 5
+
+--[[ 'for' loop with increase/decrease of a variable:
+          
+       for x = init_value, end_value, step do ... end
+          
+     where:
+          
+       x = init_value initializes the counting variable x to init_value
+       end_value      is the stopping value
+       step           is the (optional) value to sum to x at each iteration
+                      the loop continues:
+                      - when x &lt;= end_value, if step &gt; 0
+                      - when x &gt;= end_value, if step &lt; 0
+]]
+
+-- 'for' loop to print 1 2 3 4 5
+for x = 1, 5 do
+  log(x)
+end
+
+-- 'for' loop to print 1 3 5
+for x = 1, 5, 2 do
+  log(x)
+end
+
+-- 'for' loop to print 5 4 3 2 1
+for x = 5, 1, -1 do
+  log(x)
+end</pre>
+                  </td>
+                </tr>
+                <tr class="even">
+                  <td class="category">Tables</td>
+                  <td>
+                    <pre>-- creating an empty table
+t = {}
+
+-- creating a table with some initial value
+t = { x=3 }
+
+-- using the contents of a table: two equivalent ways
+log("t.x = " .. t.x)       -- dot syntax
+log("t['x'] = " .. t["x"]) -- string syntax
+
+-- printing the contents of a table: a custom function
+function table.print(t)
+  for key,value in pairs(t) do
+    log(key .. " -&gt; " .. value)
+  end
+end
+
+-- tables are always passed by reference!
+t1 = { x=3 }
+t2 = t1      -- now t2 points to the contents of t1 -&gt; no deep copy
+t2.x = 5
+log(t1.x)    -- prints 5, not 3!
+
+-- copying tables the right way
+function table.copy(t)
+  local t2 = {}
+  for key,value in pairs(t) do
+    t2[key] = value
+  end
+  return t2
+end
+t1 = { x=3 }
+t2 = table.copy(t1)
+t2.x = 5
+log(t1.x)    -- prints 3
+log(t2.x)    -- prints 5
+
+-- tables can be used as arrays
+a = { "Huey", "Dewey", "Louie" } -- indices are assigned automatically starting from 1
+log(a[1])                        -- prints "Huey"
+log(a[2])                        -- prints "Dewey"
+log(a[3])                        -- prints "Louie"
+log(#a)                          -- prints the number of elements in a
+
+-- sorting the contents of a simple table
+a = { "Huey", "Dewey", "Louie" }
+table.sort(a)  -- this operation modifies a!
+table.print(a) -- prints "1 -&gt; Dewey", "2 -&gt; Huey", "3 -&gt; Louie"
+
+--[[ To sort the contents of a nested table, such as those in the robot,
+     you need to specify a comparation function to tell the sort algorithm
+     how to compare two table elements ]]
+
+-- Take a nested table
+t = {
+  { x=4, label="Huey" },
+  { x=56, label="Dewey" },
+  { x=0.6, label="Louie" }
+}
+
+-- Sort it by x in increasing order
+table.sort(t, function(a,b) return a.x &lt; b.x end)
+
+-- Sort it by x in decreasing order
+table.sort(t, function(a,b) return a.x &gt; b.x end)
+
+-- Sort it by label in increasing order
+table.sort(t, function(a,b) return a.label &lt; b.label end)
+
+-- Sort it by label in decreasing order
+table.sort(t, function(a,b) return a.label &gt; b.label end)</pre>
+                  </td>
+                </tr>
+                <tr class="odd">
+                  <td class="category">Functions</td>
+                  <td>
+                    <pre>-- defining a function
+function my_fun(p)
+  log("Called my_fun(" .. p .. ")")
+end
+
+-- returning a value
+function my_add(a, b)
+  return a + b
+end</pre>
+                  </td>
+                </tr>
+                <tr class="even">
+                  <td class="category">Math</td>
+                  <td>
+                    <pre>-- All the math functions are part of the 'math' table
+
+-- Setting a 2D vector from length and angle
+function vec2_new_polar(length, angle) {
+  local vec2 = {
+    x = length * math.cos(angle)
+    y = length * math.sin(angle)
+  }
+  return vec2
+}
+v = vec2_new_polar(2, math.pi/3)
+
+-- Summing two 2D vectors (v1 = v1 + v2)
+function vec2_sum(v1, v2) {
+  v1.x = v1.x + v2.x
+  v1.y = v1.y + v2.y
+}
+v1 = { x=1, y=2 }
+v2 = { x=3, y=1 }
+vec2_sum(v1, v2)
+table.print(v1)   -- prints "x -&gt; 4", "y -&gt; 3"
+
+-- Getting the angle of a 2D vector
+function vec2_angle(v) {
+  return math.atan2(v.y, v.x)
+}
+
+--[[ NOTE: to get a random number, DO NOT use math.random(). Rather,
+     use robot.random, described below. ]] </pre>
+                  </td>
+                </tr>
+                <tr class="odd">
+                  <td class="category">Debugging</td>
+                  <td>
+                    <pre>-- Draw a red vector (10cm,10cm) and a green vector (5cm,10cm)
+robot.vectors = { { x=10, y=10, color="red"   },
+                  { x=5,  y=10, color="green" } }
+
+-- Write the robot id and "ciao" on top of the robot
+robot.message = robot.id .. " ciao"</pre>
+                  </td>
+                </tr>
+              </tbody></table>
+            </div>
+
+            <div class="section">
+	            <div class="sechead"><a name="programming_robots_robot">ARGoS and Lua</a></div>
+		          <img src="PLOW%202015%20Challenge_files/foot-bot.png" title="The foot-bot">
+	            <p>
+		            The robot-related functions and data are stored in the <code>robot</code> table. For
+		            instance, to set the robot wheel speed, you need to call
+	            </p>
+	            <code>robot.wheels.set_velocity(2,3)</code>
+	            <p>
+		            Analogously, To store the reading of the 4th proximity sensor in a variable named
+		            <code>r</code>, you type
+	            </p>
+	            <code>r = robot.proximity[4].value</code>
+              <p style="font-weight:bold">
+                NOTE: don't modify the values of the <code>robot</code> attributes. More specifically:
+              </p>
+              <ul style="font-weight:bold">
+	              <li>Never write directly into the <code>robot</code> attributes
+                  <ul>
+                    <li><code>robot.proximity[4].angle = 1.67 -- NO!</code>
+                  </li></ul>
+	              </li><li>Never apply operations such as <code>table.sort()</code> to the <code>robot</code> table
+                  <ul>
+                    <li><code>table.sort(robot.proximity, function(a,b) return a.value &gt; b.value end) -- NO!</code>
+                  </li></ul>
+	              </li><li>If you intend to use the values of a <code>robot</code> table, copy that table first:
+                  <ul>
+                    <li><code>myprox = table.copy(robot.proximity)</code>
+                    </li><li><code>table.sort(myprox, function(a,b) return a.value &lt; b.value end)</code>
+                  </li></ul>
+              </li></ul>
+	            <table class="code">
+		            <tbody><tr class="even">
+		              <td><code>robot.base_ground</code></td>
+		              <td>
+		                The base ground sensor reads the color of the floor.
+		                It is a list of 8 readings, each containing a table composed of
+		                <code>value</code> and <code>offset</code>. The value is either 0 or 1, where
+		                0 means black (or dark gray), and 1 means white (or light gray). The offset
+		                corresponds to the position read on the ground by the sensor. The position is
+		                expressed as a 2D vector stemming from the center of the robot. The vector
+		                coordinates are in cm.<br>
+				            The difference between this sensor and the <code>robot.motor_ground</code> is
+				            that this sensor returns binary readings (0 = black/1 = white), while
+				            <code>robot.motor_ground</code> can distinguish different shades of gray.
+		              </td>
+                  <td><img src="PLOW%202015%20Challenge_files/robot_base_ground.png"></td>
+		            </tr>
+		            <tr class="odd">
+		              <td><code>robot.distance_scanner</code></td>
+		              <td>
+		                The distance scanner is a rotating device with four sensors. Two sensors are
+		                short-range (4cm to 30cm) and two are long-range (20cm to 150cm). Each sensor
+		                returns up to 6 values every time step, for a total of 24 readings (12 short-range
+		                and 12 long-range). Each reading is a table composed of <code>angle</code> in
+		                radians and <code>distance</code> in cm. The distance value can also be -1
+				            or -2. When it is -1, it means that the object detected by the sensor is closer
+				            than the minimum sensor range (4cm for short-range, 20cm for long-range). When
+				            a sensor returns -2, it's because no object was detected at all.<br>
+		                This device is initially off. You need to use the <code>enable()</code> function
+		                to switch it on. The function <code>disable</code> switches it off.
+		                The function <code>set_angle()</code> locks the device at a specific angle, while
+		                <code>set_rpm(s)</code> sets the angular speed of the device to <code>s</code>
+		                (which must be a number). If you want to convert from radians per second to
+				            RPMs, apply the following formula: <em>RPM</em> = 30/pi * <em>radsec</em>.
+		              </td>
+                  <td></td>
+		            </tr>
+		            <tr class="even">
+		              <td><code>robot.gripper</code></td>
+		              <td>
+		                The gripper allows a robot to connect to objects such as boxes and cylinders, or
+		                other robots. A robot attached to a passive object can transport it, if it is
+		                light enough.<br>
+		                To lock the gripper, you use <code>lock_positive()</code> or
+		                <code>lock_negative()</code>. They both do the same job, so you can call the one
+		                you prefer. To unlock the gripper (thus releasing the attached object), use
+		                <code>unlock()</code>.
+		              </td>
+                  <td><img src="PLOW%202015%20Challenge_files/robot_gripper.png"></td>
+		            </tr>
+		            <tr class="odd">
+		              <td><code>robot.id</code></td>
+		              <td>
+		                A string containing the id of the robot.
+		              </td>
+                  <td></td>
+		            </tr>
+		            <tr class="even">
+		              <td><code>robot.leds</code></td>
+		              <td>
+		                Sets the color of the robot LEDs. The robot has a
+		                total of 13 RGB LEDs. 12 of them are arranged in a
+		                ring around the robot body, and one (also called
+		                the <em>beacon</em>) is positioned at the top of
+		                the robot body.<br>  To set the colors of a single
+		                LED, use <code>set_single_color(idx,
+		                color)</code>.  <code>idx</code> is the number of
+		                the LED to set (1-12 for the body LEDs, 13 for the
+		                beacon). <code>color</code> can be expressed as a
+		                string, such
+		                as <code>"red"</code>, <code>"green"</code>, <code>"blue"</code>,
+		                etc., or as a triplet of
+		                numbers <code>r,g,b</code>.<br>  To set all colors
+		                at once,
+		                use <code>set_all_colors(color)</code>. The <code>color</code>
+		                parameter works like <code>set_single_color(idx,
+		                color)</code>.
+		              </td>
+                  <td><img src="PLOW%202015%20Challenge_files/robot_leds.png"></td>
+		            </tr>
+		            <tr class="odd">
+		              <td><code>robot.light</code></td>
+		              <td>
+                    The light sensor allows the robot to detect light
+                    sources. The robot has 24 light sensors, equally
+                    distributed in a ring around its body. Each sensor
+                    reading is composed of an <code>angle</code> in
+                    radians and a <code>value</code> in the range
+                    [0,1]. The angle corresponds to where the sensor
+                    is located in the body with respect to the front
+                    of the robot, which is the local <em>x</em>
+                    axis. Regarding the value, 0 corresponds to no
+                    light being detected by a sensor, while values
+                    &gt; 0 mean that light has been detected. The
+                    value increases as the robot gets closer to a
+                    light source.
+		              </td>
+                  <td><img src="PLOW%202015%20Challenge_files/robot_light.png"></td>
+		            </tr>
+		            <tr class="even">
+		              <td><code>robot.motor_ground</code></td>
+		              <td>
+		                The motor ground sensor reads the color of the floor.
+		                It is a list of 4 readings, each containing a table composed of
+		                <code>value</code> and <code>offset</code>. The value goes from 0 or 1, where
+		                0 means black, and 1 means white. The offset corresponds to the position read
+				            on the ground by the sensor. The position is expressed as a 2D vector stemming
+				            from the center of the robot. The vector coordinates are in cm.<br>
+				            The difference between this sensor and the <code>robot.base_ground</code> is
+				            that this sensor can distinguish different shades of gray, while
+				            <code>robot.base_ground</code> returns binary readings (0 = black/1 = white).
+		              </td>
+                  <td><img src="PLOW%202015%20Challenge_files/robot_motor_ground.png"></td>
+		            </tr>
+		            <tr class="odd">
+		              <td><code>robot.proximity</code></td>
+		              <td>
+                    The proximity sensors detect objects around the robots. The sensors are 24 and are
+                    equally distributed in a ring around the robot body. Each sensor has a range of 10cm
+                    and returns a reading composed of an <code>angle</code> in radians and a <code>value</code>
+                    in the range [0,1]. The angle corresponds to where the sensor is located in the body with
+                    respect to the front of the robot, which is the local <em>x</em> axis. Regarding the value,
+                    0 corresponds to no object being detected by a sensor, while values &gt; 0 mean that an object
+                    has been detected. The value increases as the robot gets closer to the object.
+		              </td>
+                  <td><img src="PLOW%202015%20Challenge_files/robot_proximity.png"></td>
+		            </tr>
+		            <tr class="even">
+		              <td><code>robot.random</code></td>
+		              <td>
+                    This table offers a set of functions to draw random numbers from a distribution.<br>
+                    Use <code>bernoulli()</code> to get either 0 or 1 from a
+                    <a href="http://en.wikipedia.org/wiki/Bernoulli_distribution" target="_blank">Bernoulli
+                      distribution</a> with <em>p</em>=0.5. You can also write <code>bernoulli(p)</code> to set
+                    a different value for <em>p</em>.<br>
+                    Use <code>exponential(m)</code> to get a random number from an
+                    <a href="http://en.wikipedia.org/wiki/Exponential_distribution" target="_blank">exponential
+                      distribution</a> with mean <code>m</code>.<br>
+                    Use <code>gaussian(s)</code> to get a random number from a
+                    <a href="http://en.wikipedia.org/wiki/Gaussian_distribution" target="_blank">Gaussian
+                      distribution</a> with standard deviation <code>s</code> and zero mean. You can also
+                    write <code>gaussian(s,m)</code> to set a non-zero mean.<br>
+                    Use <code>uniform()</code> to get a random number from a
+                    <a href="http://en.wikipedia.org/wiki/Uniform_distribution" target="_blank">uniform
+                      distribution</a> in the range [0,1). Alternatively, you can use <code>uniform(max)</code>
+                    to get a number between 0 and <code>max</code>, or
+                    <code>uniform(min,max)</code> to get a number between <code>min</code> and
+                    <code>max</code>. If you want <em>integer</em> numbers, use the functions
+		                <code>uniform_int(max)</code> and <code>uniform_int(min,max)</code>.
+		              </td>
+                  <td></td>
+		            </tr>
+		            <tr class="odd">
+		              <td><code>robot.range_and_bearing</code></td>
+		              <td>
+                    The range-and-bearing system allows robots to perform <em>localized communication</em>.
+                    Localized communication means that a robot, upon receiving data from another robot, also
+                    detects the position of the sender with respect to its local point of view. It is important
+                    to notice that the range-and-bearing system is not like WiFi. First, because two robots can exchange
+                    data only if they are in direct line of sight - if an object is between two robots, the robots
+                    can't communicate. Second, because robots that send data can only broadcast it in a limited area -
+                    you can't pick who you talk to as you would with an IP address. Third, the robots can exchange only
+                    10 bytes of data.<br>
+                    To set the data to broadcast, use <code>set_data()</code>. This function accepts input in two forms.
+                    You can write <code>set_data(idx, data)</code>, and this means that you set the <code>idx</code>-th
+                    byte to the value of <code>data</code>. <code>data</code> must be a number in the range [0,255].
+                    Alternatively, you can write <code>set_data(data)</code>, where <code>data</code> must be a table
+                    containing exactly 10 numbers in the range [0,255].<br>
+                    At each time step, a robot receives a variable number of messages from nearby robots. Each message
+                    is stored in a table composed of <code>data</code> (the 10-bytes message payload),
+                    <code>horizontal_bearing</code> (the angle between the robot local <em>x</em> axis and the position
+                    of the message source; the angle is on the robot's <em>xy</em> plane, in radians),
+                    <code>vertical_bearing</code> (like the horizontal bearing, but it is the angle between the message
+                    source and the robot's <em>xy</em> plane), and <code>range</code> (the distance of the message
+                    source in cm).
+		              </td>
+                  <td></td>
+		            </tr>
+		            <tr class="even">
+		              <td><code>robot.wheels</code></td>
+		              <td>
+                    The real robot moves using two sets of wheels and tracks called <em>treels</em>. For simplicity,
+                    we treat the treels like normal wheels.<br>
+                    To move the robot, use <code>set_velocity(l,r)</code> where <code>l</code> and <code>r</code> are
+                    the left and right wheel velocity, respectively. By 'wheel velocity' we mean <em>linear</em> velocity.
+                    In other words, if you say <code>set_velocity(5,5)</code>, the robot will move forward at 5cm/s.<br>
+                    You can get some information about robot motion and wheels, too. <code>axis_length</code> is the distance
+                    between the two wheels in cm. <code>velocity_left</code> and <code>velocity_right</code> store the current
+                    wheel velocity. <code>distance_left</code> and <code>distance_right</code> store the linear distance
+                    covered by the wheels in the last time step.
+		              </td>
+                  <td><img src="PLOW%202015%20Challenge_files/robot_wheels.png"></td>
+		            </tr>
+		            <tr class="odd">
+		              <td><code>robot.turret</code></td>
+		              <td>
+				            The foot-bot gripper is attached to a rotating device called the <em>gripper</em>. You can control the gripper
+				            by either setting its rotation, or its rotational speed. To set its rotation, you must first call the
+				            method <code>set_position_control_mode()</code> to switch the gripper to position control mode, and then
+				            call <code>set_rotation(angle)</code> to rotate the gripper at angle <code>angle</code>. Alternatively,
+				            you can set the rotational speed by calling <code>set_speed_control_mode()</code> first, and then
+				            <code>set_rotation_speed(speed)</code>. With <code>set_passive_mode()</code> you instruct the gripper
+				            to be in a state in which, as the robot moves with an object gripped, the turret rotates due to the
+				            weight of the gripped object.
+		              </td>
+                  <td></td>
+		            </tr>
+		            <tr class="even">
+		              <td><code>robot.colored_blob_omnidirectional_camera</code></td>
+		              <td>
+				            This device returns a list of colored blobs, along with their position with respect to the robot center.
+				            A colored blob in ARGoS corresponds to an LED. The list of blobs varies in size over time, depending on
+				            what the robots sees. To start collecting data, you need to call <code>enable()</code>. To stop, call
+				            <code>disable()</code>.
+		              </td>
+                  <td></td>
+		            </tr>
+	            </tbody></table>
+	          </div>
+            
+            <div class="section">
+	            <div class="sechead"><a name="project_details">Project Details</a></div>
+              <h2>Technical Information</h2>
+              <p>
+                In this section you'll learn how to run the challenge project. You must download
+                a package that contains the necessary files to execute the experiment:
+              </p>
+              <ul>
+                <li>The <code>.argos</code> configuration file;
+                </li><li>The loop functions (i.e., the logic to gather the data) in source format.
+              </li></ul>
+              <p>
+                To run the experiment you need some setup explained in the following.
+              </p>
+              <h2>Setting up the Code</h2>
+              <ol>
+		            <li>To correctly execute the experiment code, <strong>you need to have a version of ARGoS equal or newer than 3.0.0-beta35</strong>.
+		              To check your current version of ARGoS, type at the command prompt:
+		              <pre>$ argos3 --version </pre>
+                </li><li>Download the experiment files: <a href="https://www.argos-sim.info/plow2015/PLOW2015_v1.0.tar.bz2">PLOW2015_v1.0.tar.bz2</a>.
+                </li><li>Unpack the archive and compile the code:
+                  <pre>$ tar xvf PLOW2015_v1.0.tar.bz2            # Unpacking
+$ cd PLOW2015                              # Enter the directory
+$ mkdir build                              # Creating build dir
+$ cd build                                 # Entering build dir
+$ cmake -DCMAKE_BUILD_TYPE=Release ../src  # Configuring the build dir
+$ make                                     # Compiling the code </pre>
+                </li><li>Set the environment variable <code>ARGOS_PLUGIN_PATH</code> to the full path
+                  in which the <code>build/</code> directory is located:
+                  <pre>$ export ARGOS_PLUGIN_PATH=/path/to/PLOW2015/build/ </pre>
+                  You can also put this line into your <code>$HOME/.bashrc</code> file, so it
+                  will be automatically executed every time you open a console.
+                </li><li>Run the experiment to check that everything is OK:
+                  <pre>$ cd /path/to/PLOW2015      # Make sure you are in the right directory
+$ argos3 -c challenge.argos # Run the experiment </pre>
+                  If the ARGoS GUI appears, you're ready to go.
+              </li></ol>
+              <h2>Setting up the Experiment</h2>
+		          <p>
+			          <strong>Loading a script at init time.</strong> When you
+			          launch ARGoS without visualization, you can't use the GUI to
+			          set the running script. However, you can modify the XML
+			          configuration file to load automatically a script for
+			          you. At line 46 of <code>challenge.argos</code>
+			          you'll see that the Lua controller has an empty
+			          section <code>&lt;params /&gt;</code>. An example of how to
+			          set the script is at line 49 of the same file. Just comment
+			          line 46, uncomment line 49 and set the <code>script</code>
+			          attribute to the file name of your script.
+		          </p>
+		          <p>
+			          <strong>Changing the random seed.</strong> When you want to
+			          run multiple repetitions of an experiment, it is necessary
+			          to change the random seed every time. To change the random
+			          seed, set the value at line 11
+			          of <code>challenge.argos</code>,
+			          attribute <code>random_seed</code>. If you want a different
+			          random seed for every experiment, just remove
+			          the <code>random_seed</code> attribute altogether. The seed
+			          will be chosen using the computer clock and logged on the
+			          terminal (standard out).
+		          </p>
+		          <p>
+			          <strong>Changing the number of robots.</strong> If you want
+			          to increase or decrease the number of robots taking part in
+			          the experiment, change the <code>quantity</code> attribute
+			          at line 81 of <code>challenge.argos</code>.
+		          </p>
+		          <p>
+			          <strong>Making ARGoS faster.</strong> Sometimes ARGoS is
+			          a little slow, especially when many robots and many sensors
+			          are being simulated. You can make ARGoS go faster by setting
+			          the attribute <code>threads</code> at line 9
+			          of <code>challenge.argos</code>. Experiment with the
+			          values, because the best setting depends on your computer.
+		          </p>
+		        </div>
+
+            <div class="section">
+	            <div class="sechead"><a name="faq">Frequently Asked Questions</a></div>
+	            <div class="question">
+                <em>If I use metatables to do something like this:</em>
+		            <pre>MyTable = {}
+MyTable.__index = MyTable </pre>
+		            <em>and then select a robot, ARGoS gets slow and
+		              eventually crashes. What's wrong?</em><br> This is a
+		            known issue with the variable state widget of the Lua
+		            editor in ARGoS, but there is a
+		            workaround. Do something like this:<br>
+		            <pre>MyTable = {}
+MyTable_mt = {}
+MyTable.__index = MyTable_mt </pre>
+	            </div>
+	            <div class="question">
+		            <em>Is there a way to automatically pick a different random
+		              seed at ARGoS startup? Editing the XML file for each
+		              experiment looks really tedious.</em><br>
+		            Sure. Just remove the <code>random_seed</code> attribute from
+		            the <code>&lt;experiment&gt;</code> section.<br>
+	            </div>
+	          </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+
+</body></html>
