@@ -52,7 +52,7 @@ function step()
 	lights_factor = math.sqrt(lights["x"] * lights["x"] + lights["y"] * lights["y"])
 	target_factor = math.sqrt(target_point["x"] * target_point["x"] + target_point["y"] * target_point["y"])
 	
-    target_angle = math.atan2(target_point["y"], target_point["x"])
+	target_angle = math.atan2(target_point["y"], target_point["x"])
 	obstacle_angle = math.atan2(prox["y"], prox["x"])
 	
 	--Rotation direction depends on target_angle
@@ -64,7 +64,7 @@ function step()
 	--                                         If the target is very far the target_angle is calculated only 
 	--                                         on noise levels and therefore a rotation is not needed =>  
 	--                                         the robot is not perceiving a target: target_factor ~ 0)
-	rotation_velocity = MAX_ROTATION_VELOCITY* math.abs(target_angle) * target_factor
+	rotation_velocity = MAX_ROTATION_VELOCITY * math.abs(target_angle) * target_factor
 	
 	--Forward velocity depend on the presence of an obstacle in front of the robot, if the way is clear the robot go full speed
 	forward_velocity = MAX_FORWARD_VELOCITY / (1 + math.abs(obstacle_angle * proximity_factor)) 
