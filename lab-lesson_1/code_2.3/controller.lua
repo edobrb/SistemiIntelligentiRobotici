@@ -43,9 +43,9 @@ function step()
 	prox = calcProximityVector()
 	target_point = lights + prox
 	
-	proximity_factor = prox.length()
-	lights_factor = lights.length()
-	target_factor = target_point.length()
+	proximity_factor = prox.length
+	lights_factor = lights.length
+	target_factor = target_point.length
 	
 	target_angle = math.atan2(target_point.y, target_point.x)
 	obstacle_angle = math.atan2(prox.y, prox.x)
