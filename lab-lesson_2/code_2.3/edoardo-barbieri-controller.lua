@@ -16,7 +16,7 @@
 -- Soluzione:
 
 -- Ogni livello può avere come output i livelli di potenza delle due ruote. Un livello
--- superiore può andare a sovrascrivere questi valori.
+-- superiore può andare a sovrascrivere o modificare questi valori.
 
 -- Livelli (tasks) individuati (dal più base al più avanzato):
 --   sensing_level: analizza i dati raccolti dai sensori, nessun output
@@ -29,9 +29,10 @@
 MAX_TOTAL_VELOCITY = 30  --cm/s
 MAX_ROTATION_VELOCITY = 30 --cm/s
 MAX_FORWARD_VELOCITY = 30 --cm/s
-OBSTACLE_SENSIBILITY = 1
-LIGHT_SENSIBILITY = 2
-LIMIT_OBSTACLE_MAGNITUDE = 0.8
+OBSTACLE_SENSIBILITY = 1.5 
+LIGHT_SENSIBILITY = 1
+LIMIT_OBSTACLE_MAGNITUDE = 0.8 -- higher value: while followingthe wall the wall will be kept nearest
+LIMIT_LIGHT_MAGNITUDE = 1.5   -- when reach this limit the robot stop
 
 require('vector2')
 
@@ -40,15 +41,8 @@ function init()
 end
 
 -- UTILS
-function math.sign(x)
-   if x<0 then
-     return -1
-   elseif x>0 then
-     return 1
-   else
-     return 0
-   end
-end
+function ternary(c,t,f) if c then return t else return f end end
+function math.sign(x) return ternary(x < 0, -1, ternary(x > 0, 1, 0)) end
 
 function calcProximityVector()
 	sum = v2(0,0)
@@ -94,14 +88,11 @@ function obstacle_avoidance_level(data)
 		alpha = 1 / data.sensing.obstacle_magnitude
 		data.left_motor_power = alpha + math.sign(data.sensing.obstacle_direction) * (1-alpha)
 		data.right_motor_power = alpha - math.sign(data.sensing.obstacle_direction)* (1-alpha)
-		urgent = (math.pi - math.abs(data.sensing.obstacle_direction)) / math.pi * 2
-		data.left_motor_power = 1 + (math.sign(data.sensing.obstacle_direction) * urgent)
-		data.right_motor_power = 1 - (math.sign(data.sensing.obstacle_direction) * urgent)
 	end
 end
 
-wall_present = false 	-- if the robot has found a wall and it's fallowing it wall_present is true
-keep_left = true  -- wall fallowing direction
+wall_present = false 	-- if the robot has found a wall and it's following it "wall_present" is true
+keep_left = true  -- wall following direction
 function keep_wall_to_right_level(data)
 	
 	-- understand where is the obstacle (right or left)
@@ -117,43 +108,24 @@ function keep_wall_to_right_level(data)
 			right = true
 		end
 	end
-	if right and left then -- let obstacle avoidance level do the work
+	if right and left then -- not my competence
 		return
 	end
 
-	-- FALLOWING THE WALL LOGIC
+	-- FOLLOWING THE WALL LOGIC
 	if data.sensing.obstacle_is_present and (not wall_present) then
 		wall_present = true
 		keep_left = data.sensing.obstacle_direction > 0
 	end
 	angle = (data.sensing.obstacle_direction)
-	if keep_left then 
-		angle = angle - math.pi/2
-	else
-		angle = angle + math.pi/2
-	end
-	
+	angle = ternary(keep_left, angle - math.pi/2, angle + math.pi/2)
 	if math.abs(angle) > math.pi/16 and data.sensing.obstacle_is_present then 
 		data.left_motor_power = -math.sign(angle)
 		data.right_motor_power = math.sign(angle)
 	elseif wall_present then
-		if keep_left then
-			if data.sensing.obstacle_magnitude < LIMIT_OBSTACLE_MAGNITUDE then
-				data.left_motor_power = 0.5
-				data.right_motor_power = 1
-			else
-				data.left_motor_power = 1
-				data.right_motor_power = 0.5
-			end
-		else
-			if data.sensing.obstacle_magnitude < LIMIT_OBSTACLE_MAGNITUDE then
-				data.left_motor_power = 1
-				data.right_motor_power = 0.5
-			else
-				data.left_motor_power = 0.5
-				data.right_motor_power = 1
-			end
-		end
+		on_wall = data.sensing.obstacle_magnitude < LIMIT_OBSTACLE_MAGNITUDE
+		data.left_motor_power = ternary(keep_left, ternary(on_wall, 0.5,1),ternary(on_wall, 1, 0.5))
+		data.right_motor_power = ternary(keep_left, ternary(on_wall, 1,0.5),ternary(on_wall, 0.5, 1))
 	end
 end
 
@@ -166,11 +138,14 @@ end
 function phototaxis_level(data)
 	angle = data.sensing.light_direction - data.sensing.obstacle_direction
 	angle = math.abs(((angle + math.pi) % (2*math.pi)) - math.pi)
-	if data.sensing.obstacle_magnitude < LIMIT_OBSTACLE_MAGNITUDE then						-- off wall
-		if wall_present and angle > math.pi/2 and data.sensing.light_is_present then				-- light at the opposite direction of wall (and fallowing wall)
+	if data.sensing.light_magnitude > LIMIT_LIGHT_MAGNITUDE then 										--enough ligth, stay here
+		data.left_motor_power = 0
+		data.right_motor_power  = 0
+	elseif data.sensing.obstacle_magnitude < LIMIT_OBSTACLE_MAGNITUDE then				-- off wall
+		if wall_present and angle > math.pi/2 and data.sensing.light_is_present then				-- light at the opposite direction of wall (and following wall)
 			phototaxis(data)
 			wall_present = false
-		elseif (not wall_present) and data.sensing.light_is_present then											-- not fallowing the wall and light is present
+		elseif (not wall_present) and data.sensing.light_is_present then											-- not following the wall and light is present
 			phototaxis(data)
 		end
 	end
