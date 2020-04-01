@@ -1,6 +1,7 @@
 v2_mt = {
   __add = function(left,right) return v2(left.x + right.x, left.y + right.y) end,
   __mul = function(left,right) return v2(left.x * right, left.y * right) end,
+  __div = function(left,right) return v2(left.x / right, left.y / right) end,
   __sub = function(left, right) return v2(left.x - right.x, left.y - right.y) end,
   __unm = function(left) return v2(-left.x , -left.y) end,
   __index = function(v, index)

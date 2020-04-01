@@ -26,13 +26,14 @@
 --   phototaxis_level: questo livello permette di far andare il robot verso la luce quando è più opportuno farlo
 
 
-MAX_TOTAL_VELOCITY = 30  --cm/s
-MAX_ROTATION_VELOCITY = 30 --cm/s
-MAX_FORWARD_VELOCITY = 30 --cm/s
+MAX_TOTAL_VELOCITY = 10  --cm/s
+MAX_ROTATION_VELOCITY = 10 --cm/s
+MAX_FORWARD_VELOCITY = 10 --cm/s
 OBSTACLE_SENSIBILITY = 1.5 
-LIGHT_SENSIBILITY = 1
+LIGHT_SENSIBILITY = 0.3
 LIMIT_OBSTACLE_MAGNITUDE = 0.8 -- higher value: while followingthe wall the wall will be kept nearest
 LIMIT_LIGHT_MAGNITUDE = 1.5   -- when reach this limit the robot stop
+AVG_COUNT = 5
 
 require('vector2')
 
@@ -63,19 +64,29 @@ function calcLightingVector()
 end
 
 -- SUBSUNTIVE LEVELS
+v = v2(0,0)
+v1 = v2(0,0)
 function sensing_level(data)
 	sensing_data = { }
-	v = calcProximityVector()
-	sensing_data["obstacle_is_present"] = v.length > 0.1
-	sensing_data["obstacle_magnitude"] = v.length
-	sensing_data["obstacle_direction"] = math.atan2(v.y, v.x)
-	sensing_data["obstacle_position"] = v
-	v1 = calcLightingVector()
-	sensing_data["light_is_present"] = v1.length > 0.2
-	sensing_data["light_magnitude"] = v1.length
-	sensing_data["light_direction"] = math.atan2(v1.y, v1.x)
-	sensing_data["light_position"] = v1
-	data["sensing"] = sensing_data
+	
+	v = v + calcProximityVector()
+	v1 = v1 + calcLightingVector()
+	if current_step % AVG_COUNT == 0 then
+		v = v / AVG_COUNT
+		v1 = v1 / AVG_COUNT
+		sensing_data["obstacle_is_present"] = v.length > 0.1
+		sensing_data["obstacle_magnitude"] = v.length
+		sensing_data["obstacle_direction"] = math.atan2(v.y, v.x)
+		sensing_data["obstacle_position"] = v
+		
+		sensing_data["light_is_present"] = v1.length > 0.2
+		sensing_data["light_magnitude"] = v1.length
+		sensing_data["light_direction"] = math.atan2(v1.y, v1.x)
+		sensing_data["light_position"] = v1
+		data["sensing"] = sensing_data
+		v = v2(0,0)
+		v1 = v2(0,0)
+	end
 end
 
 function forward_level(data)
@@ -152,23 +163,28 @@ function phototaxis_level(data)
 
 end
 
+current_step = 0
 function step()
 	
+	current_step = current_step + 1
 	data = { left_motor_power = 0.0 , right_motor_power = 0.0 }
 	
 	-- COMPUTING LEVELS
 	sensing_level(data)
-	forward_level(data)
-	obstacle_avoidance_level(data)
-	keep_wall_to_right_level(data)
-	phototaxis_level(data)
+	if current_step % AVG_COUNT == 0 then
+		forward_level(data)
+		obstacle_avoidance_level(data)
+		keep_wall_to_right_level(data)
+		phototaxis_level(data)
+		robot.wheels.set_velocity(0, 0)
+		left_v = math.max(math.min(data.left_motor_power * MAX_TOTAL_VELOCITY, MAX_TOTAL_VELOCITY), -MAX_TOTAL_VELOCITY)
+		right_v = math.max(math.min(data.right_motor_power * MAX_TOTAL_VELOCITY, MAX_TOTAL_VELOCITY), -MAX_TOTAL_VELOCITY)
+		robot.wheels.set_velocity(left_v, right_v)
+	end
 	
 	
 	-- SETTING WHEEL VELOCITY 
-	robot.wheels.set_velocity(0, 0)
-	left_v = math.max(math.min(data.left_motor_power * MAX_TOTAL_VELOCITY, MAX_TOTAL_VELOCITY), -MAX_TOTAL_VELOCITY)
-	right_v = math.max(math.min(data.right_motor_power * MAX_TOTAL_VELOCITY, MAX_TOTAL_VELOCITY), -MAX_TOTAL_VELOCITY)
-	robot.wheels.set_velocity(left_v, right_v)
+	
 end
 
 
