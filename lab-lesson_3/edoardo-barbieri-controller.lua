@@ -1,18 +1,21 @@
 MAX_VELOCITY = 30  --cm/s
 require('vector2')
-
+AXIS_L = 0
 --[[ This function is executed every time you press the 'execute' button ]]
 function init()
 	robot.wheels.set_velocity(0,0)
+	AXIS_L = robot.wheels.axis_length
 end
 
 -- UTILS
 function ternary(c,t,f) if c then return t else return f end end
 function math.sign(x) return ternary(x < 0, -1, ternary(x > 0, 1, 0)) end
 
-proximityNearVector = v2(0,0)
-proximityNearAlpha = 0.3
-function calcNearestProximityVector()
+proximityMaxVector = v2(0,0)
+proximityAvgVector = v2(0,0)
+proximityMaxAlpha = 0.5
+proximityAvgAlpha = 0.5
+function calcMaxProximityVector()
 	sum = v2(0,0)
 	max = 1
 	for i=2,#robot.proximity do
@@ -21,25 +24,36 @@ function calcNearestProximityVector()
 		end
 	end
 	sum = sum + v2P({angle = robot.proximity[max].angle, length = robot.proximity[max].value})
-	proximityNearVector = proximityNearVector * (1 - proximityNearAlpha) + sum * proximityNearAlpha
-	return proximityNearVector
+	proximityMaxVector = proximityMaxVector * (1 - proximityMaxAlpha) + sum * proximityMaxAlpha
+	return proximityMaxVector
 end
-
-proximityVector = v2(0,0)
-proximityAlpha = 0.3
-function calcProximityVector()
+function calcAvgProximityVector()
 	sum = v2(0,0)
 	for i=1,#robot.proximity do
 	    sensor_angle = robot.proximity[i].angle
 		sum = sum +  v2P({angle = robot.proximity[i].angle, length = robot.proximity[i].value})
 	end
-	proximityVector = proximityVector * (1 - proximityAlpha) + sum * proximityAlpha
-	return proximityVector
+	proximityAvgVector = proximityAvgVector * (1 - proximityAvgAlpha) + sum * proximityAvgAlpha
+	return proximityAvgVector
 end
 
+lightNearVector = v2(0,0)
+lightNearAlpha = 0.5
+function calcMaxLightingVector()
+	sum = v2(0,0)
+	max = 1
+	for i=2,#robot.light do
+		if(robot.light[i].value > robot.light[max].value) then
+			max = i
+		end
+	end
+	sum = sum + v2P({angle = robot.light[max].angle, length = robot.light[max].value})
+	lightNearVector = lightNearVector * (1 - lightNearAlpha) + sum * lightNearAlpha
+	return lightNearVector
+end
 lightVector = v2(0,0)
-lightAlpha = 0.3
-function calcLightingVector()
+lightAlpha = 0.5
+function calcAvgLightingVector()
 	sum = v2(0,0)
 	for i=1,#robot.light do
 	    sensor_angle = robot.light[i].angle
@@ -50,46 +64,83 @@ function calcLightingVector()
 end
 
 function linearVelocity(v)
-    L = robot.wheels.axis_length
-	return v2(v.length - v.angle * L / 2, v.length + v.angle * L / 2)
+	return v2(v.length - v.angle * AXIS_L / 2, v.length + v.angle * AXIS_L / 2)
 end
 
-function magnitudeAbove(v, threshold)
+function fieldThreshold(v, threshold)
 	return ternary(v.length > threshold, v, zero_field)
+end
+
+-- Schemas runner
+function runSchemas(schemas)
+  fieldsSum = v2(0,0)
+  for i=1,#schemas do
+  	field = fieldThreshold(schemas[i].schema(schemas[i].m), schemas[i].threshold * schemas[i].m)
+  	if field.length > 0 and schemas[i].on ~= nil then
+  		schemas[i].on(field)
+  	elseif field.length == 0 and schemas[i].off ~= nil then
+  		schemas[i].off(field)
+  	end
+  	fieldsSum = fieldsSum + field
+  end
+  return fieldsSum
 end
 
 -- Motors schemas
 zero_field = v2P({angle = 0, length = 0})
-function lightField(multiplier, threshold)
-	result = calcLightingVector() * multiplier
-	return magnitudeAbove(result, threshold) 
+function lightSchema(m)
+	result = calcAvgLightingVector()
+	result = ternary(result.length > 1, result.normalized, result)
+	return result * m
 end
-function forwardField(multiplier, threshold)
-	return v2P({ angle = 0, length = 1}) * multiplier
+function forwardSchema(m)
+	return v2P({ angle = 0, length = 1}) * m
 end
-function obstacleField(multiplier, threshold)
-	result = -calcProximityVector() * multiplier
-	return magnitudeAbove(result, threshold) 
+function obstacleSchema(m)
+	result = calcMaxProximityVector()
+	result = ternary(result.length > 1, result.normalized, result)
+	return ternary(result.angle < math.pi*(3/4) and result.angle > -math.pi*(3/4), -result, zero_field) * m
+
 end
-function obstacleFieldCircum(multiplier, threshold)
-	result = -calcProximityVector() * multiplier
-	result = result.rotate(-math.sign(result.angle) * math.pi / 2)
-	return magnitudeAbove(result, threshold) 
+function obstacleCircumSchema(m)
+	result = -calcAvgProximityVector()
+	result = result.rotate(-math.sign(result.angle) * (math.pi / 2) * 1.05).normalized
+	return result.normalized * m
 end
 
---[[ This function is executed at each time step It must contain the logic of your controller ]]
+--debug callbacks
+function avoidingObstacles(field) robot.leds.set_single_color(13, "red") end
+function notAvoidingObstacles(field) robot.leds.set_single_color(13, "black") end
+function followingLight(field) 
+	for i=1,12 do robot.leds.set_single_color(i, "yellow") end 
+end
+function notFollowingLight(field) 
+  for i=1,12 do robot.leds.set_single_color(i, "black") end 
+ end
+
+schemas = {
+  { schema = forwardSchema,        m = 0.1,  threshold = 0.0 },
+  { schema = obstacleSchema,       m = 2,  threshold = 0.1, on = avoidingObstacles, off = notAvoidingObstacles },
+  { schema = obstacleCircumSchema, m = 4,  threshold = 0.2 },
+  { schema = lightSchema,          m = 4,  threshold = 0.2, on = followingLight, off = notFollowingLight }
+}
+	
 function step()
-	fieldVctor = 
-		obstacleField(3, 3) + 
-		obstacleFieldCircum(1, 0.1) + 
-		forwardField(0.5, 0) + 
-		lightField(2, 0.1)
+
 	
-	vel = linearVelocity(fieldVctor)
-	m = math.max(vel.x, vel.y)
+	
+	
+	fieldVector = runSchemas(schemas)
+	vel = linearVelocity(fieldVector)
+	
+	m = math.max(math.abs(vel.x), math.abs(vel.y))
 	vel = vel / m * MAX_VELOCITY
+
 	
-	robot.wheels.set_velocity(vel.x,vel.y)
+	robot.wheels.set_velocity(
+	  math.max(-MAX_VELOCITY, math.min(MAX_VELOCITY, vel.x)), 
+	  math.max(-MAX_VELOCITY, math.min(MAX_VELOCITY, vel.y)))
+	
 end
 
 

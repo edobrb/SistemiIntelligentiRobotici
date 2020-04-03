@@ -7,6 +7,7 @@ v2_mt = {
   __index = function(v, index)
     if index == "length" then return math.sqrt(v.x ^ 2 + v.y ^ 2)
 	elseif index == "angle" then return math.atan2(v.y, v.x)
+	elseif index == "normalized" then if v.length==0 then return v2(0,0) else return v2(v.x / v.length, v.y / v.length) end
 	elseif index == "rotate" then return function(angle) return v2P({length = v.length, angle = v.angle + angle}) end
     elseif index == "tostring" then return function() return "[" .. v.x ..", " .. v.y .. "]" end
     else return rawget(v, index) end end
