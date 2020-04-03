@@ -20,13 +20,13 @@
  
     <lua_controller id="lua">
       <actuators>
-        <differential_steering implementation="default" noise_level="0.05"/>
+        <differential_steering implementation="default" noise_level="0.005"/>
 		<leds implementation="default" medium="leds" />
       </actuators>
       <sensors>
-        <differential_steering implementation="default" noise_level="0.05" />
-        <footbot_light implementation="rot_z_only" show_rays="false" noise_level="0.05" />
-		<footbot_proximity implementation="default" show_rays="true" noise_level="0.05" />
+        <differential_steering implementation="default" noise_level="0.005" />
+        <footbot_light implementation="rot_z_only" show_rays="false" noise_level="0.005" />
+		<footbot_proximity implementation="default" show_rays="true" noise_level="0.005" />
 	<positioning implementation="default" noise_level="0.0" />
       </sensors>
       <params script="edoardo-barbieri-controller.lua" />

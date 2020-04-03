@@ -12,7 +12,6 @@ v2_mt = {
     elseif index == "tostring" then return function() return "[" .. v.x ..", " .. v.y .. "]" end
     else return rawget(v, index) end end
 }
-
 function v2(X, Y)
   local v = { 
     x = X, 

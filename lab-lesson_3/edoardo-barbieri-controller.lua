@@ -1,20 +1,119 @@
-MAX_VELOCITY = 30  --cm/s
 require('vector2')
+
+MAX_VELOCITY = 10 
 AXIS_L = 0
+zero_field = v2P({angle = 0, length = 0})
+
 --[[ This function is executed every time you press the 'execute' button ]]
 function init()
 	robot.wheels.set_velocity(0,0)
 	AXIS_L = robot.wheels.axis_length
 end
 
+-- (Transational velocity, Angular velocity) => Differential velocity (left, right)
+function differentialVelocity(v)
+	return v2(1, 1) * v.length + v2(-1, 1) * v.angle * AXIS_L / 2
+end
+
+-- SCHEMAS EXECUTOR
+function runSchemas(schemas)
+  fieldsSum = v2(0,0)
+  for i=1,#schemas do
+  	field = fieldThreshold(schemas[i].schema(schemas[i].m), schemas[i].threshold * schemas[i].m)
+  	if field.length > 0 and schemas[i].on ~= nil then
+  		schemas[i].on(field)
+  	elseif field.length == 0 and schemas[i].off ~= nil then
+  		schemas[i].off(field)
+  	end
+  	fieldsSum = fieldsSum + field
+  end
+  return fieldsSum
+end
+function fieldThreshold(v, threshold)
+	return ternary(v.length > threshold, v, zero_field)
+end
+
+
+-- MOTOR SCHEMAS (every schemas must return a force field with maximum length m)
+function forwardSchema(m)
+	return v2P({ angle = 0, length = 1}) * m
+end
+function obstacleSchema(m)
+	result = calcMaxProximityVector()
+	result = ternary(result.length > 1, result.normalized, result)
+	return -result * m / math.abs(result.angle)
+
+end
+function obstacleCircumSchema(m)
+	result = -calcAvgProximityVector()
+	result = result.rotate(-math.sign(result.angle) * (math.pi / 2) * 1.01) -- (almost) tangent field force
+	result = ternary(result.length > 1, result.normalized, result)
+	return result * m
+end
+function lightSchema(m)
+	result = calcAvgLightingVector()
+	result = ternary(result.length > 1, result.normalized, result)
+	return result * m
+end
+
+--DEBUG CALLBACKS
+function avoidingObstacles(field) robot.leds.set_single_color(13, "red") end
+function notAvoidingObstacles(field) robot.leds.set_single_color(13, "black") end
+function followingLight(field) for i=1,12 do if i%2 == 0 then robot.leds.set_single_color(i, "yellow") end end end
+function notFollowingLight(field) for i=1,12 do if i%2 == 0 then robot.leds.set_single_color(i, "black") end end end
+function followingWall(field) for i=1,12 do if i%2 == 1 then robot.leds.set_single_color(i, "green") end end end
+function notFollowingWall(field) for i=1,12 do if i%2 == 1 then robot.leds.set_single_color(i, "black") end end end
+
+-- SCHEMAS: every schema mest have: a 'schema' function that compute the force field, a multiplier 'm', a threshold 'threshold'
+-- if the length of 'field' * 'm' is not > 'threshold' then the force field will be 0 for the specified schema.
+-- When a schema surpass the threshold then 'on' is called, otherwise 'off'.
+schemas = {
+  { schema = forwardSchema,        m = 0.1, threshold = 0.0 },
+  { schema = obstacleSchema,       m = 3,   threshold = 0.1, on = avoidingObstacles, off = notAvoidingObstacles },
+  { schema = obstacleCircumSchema, m = 3,   threshold = 0.1, on = followingWall, off = notFollowingWall},
+  { schema = lightSchema,          m = 4,   threshold = 0.2, on = followingLight, off = notFollowingLight }
+}
+	
+function step()
+	fieldVector = runSchemas(schemas)       --run the schemas and find compute the actual force field
+	vel = differentialVelocity(fieldVector) -- convert it to differential velocity
+	
+	--max out the wheel velocity or keep inside MAX_VELOCITY
+	m = math.max(math.abs(vel.x), math.abs(vel.y)) 
+	vel = vel / m * MAX_VELOCITY
+
+	robot.wheels.set_velocity(vel.x, vel.y)
+end
+
+
+function reset()
+	robot.wheels.set_velocity(0,0)
+	proximityMaxVector = v2(0,0)
+	proximityAvgVector = v2(0,0)
+	lightNearVector = v2(0,0)
+	lightVector = v2(0,0)
+end
+
+
+function destroy()
+   
+end
+
+
+
 -- UTILS
 function ternary(c,t,f) if c then return t else return f end end
 function math.sign(x) return ternary(x < 0, -1, ternary(x > 0, 1, 0)) end
 
+-- READS FROM SENSORS UTILS
 proximityMaxVector = v2(0,0)
 proximityAvgVector = v2(0,0)
+lightNearVector = v2(0,0)
+lightVector = v2(0,0)
 proximityMaxAlpha = 0.5
 proximityAvgAlpha = 0.5
+lightNearAlpha = 0.5
+lightAlpha = 0.5
 function calcMaxProximityVector()
 	sum = v2(0,0)
 	max = 1
@@ -36,9 +135,6 @@ function calcAvgProximityVector()
 	proximityAvgVector = proximityAvgVector * (1 - proximityAvgAlpha) + sum * proximityAvgAlpha
 	return proximityAvgVector
 end
-
-lightNearVector = v2(0,0)
-lightNearAlpha = 0.5
 function calcMaxLightingVector()
 	sum = v2(0,0)
 	max = 1
@@ -51,8 +147,6 @@ function calcMaxLightingVector()
 	lightNearVector = lightNearVector * (1 - lightNearAlpha) + sum * lightNearAlpha
 	return lightNearVector
 end
-lightVector = v2(0,0)
-lightAlpha = 0.5
 function calcAvgLightingVector()
 	sum = v2(0,0)
 	for i=1,#robot.light do
@@ -62,101 +156,4 @@ function calcAvgLightingVector()
 	lightVector =  lightVector * (1 - lightAlpha) + sum * lightAlpha
 	return lightVector
 end
-
-function linearVelocity(v)
-	return v2(v.length - v.angle * AXIS_L / 2, v.length + v.angle * AXIS_L / 2)
-end
-
-function fieldThreshold(v, threshold)
-	return ternary(v.length > threshold, v, zero_field)
-end
-
--- Schemas runner
-function runSchemas(schemas)
-  fieldsSum = v2(0,0)
-  for i=1,#schemas do
-  	field = fieldThreshold(schemas[i].schema(schemas[i].m), schemas[i].threshold * schemas[i].m)
-  	if field.length > 0 and schemas[i].on ~= nil then
-  		schemas[i].on(field)
-  	elseif field.length == 0 and schemas[i].off ~= nil then
-  		schemas[i].off(field)
-  	end
-  	fieldsSum = fieldsSum + field
-  end
-  return fieldsSum
-end
-
--- Motors schemas
-zero_field = v2P({angle = 0, length = 0})
-function lightSchema(m)
-	result = calcAvgLightingVector()
-	result = ternary(result.length > 1, result.normalized, result)
-	return result * m
-end
-function forwardSchema(m)
-	return v2P({ angle = 0, length = 1}) * m
-end
-function obstacleSchema(m)
-	result = calcMaxProximityVector()
-	result = ternary(result.length > 1, result.normalized, result)
-	return ternary(result.angle < math.pi*(3/4) and result.angle > -math.pi*(3/4), -result, zero_field) * m
-
-end
-function obstacleCircumSchema(m)
-	result = -calcAvgProximityVector()
-	result = result.rotate(-math.sign(result.angle) * (math.pi / 2) * 1.05).normalized
-	return result.normalized * m
-end
-
---debug callbacks
-function avoidingObstacles(field) robot.leds.set_single_color(13, "red") end
-function notAvoidingObstacles(field) robot.leds.set_single_color(13, "black") end
-function followingLight(field) 
-	for i=1,12 do robot.leds.set_single_color(i, "yellow") end 
-end
-function notFollowingLight(field) 
-  for i=1,12 do robot.leds.set_single_color(i, "black") end 
- end
-
-schemas = {
-  { schema = forwardSchema,        m = 0.1,  threshold = 0.0 },
-  { schema = obstacleSchema,       m = 2,  threshold = 0.1, on = avoidingObstacles, off = notAvoidingObstacles },
-  { schema = obstacleCircumSchema, m = 4,  threshold = 0.2 },
-  { schema = lightSchema,          m = 4,  threshold = 0.2, on = followingLight, off = notFollowingLight }
-}
-	
-function step()
-
-	
-	
-	
-	fieldVector = runSchemas(schemas)
-	vel = linearVelocity(fieldVector)
-	
-	m = math.max(math.abs(vel.x), math.abs(vel.y))
-	vel = vel / m * MAX_VELOCITY
-
-	
-	robot.wheels.set_velocity(
-	  math.max(-MAX_VELOCITY, math.min(MAX_VELOCITY, vel.x)), 
-	  math.max(-MAX_VELOCITY, math.min(MAX_VELOCITY, vel.y)))
-	
-end
-
-
---[[ This function is executed every time you press the 'reset'
-     button in the GUI. It is supposed to restore the state
-     of the controller to whatever it was right after init() was
-     called. The state of sensors and actuators is reset
-     automatically by ARGoS. ]]
-function reset()
-	robot.wheels.set_velocity(0,0)
-end
-
-
-
---[[ This function is executed only once, when the robot is removed
-     from the simulation ]]
-function destroy()
-   -- put your code here
-end
+--END SENSOR UTILS
