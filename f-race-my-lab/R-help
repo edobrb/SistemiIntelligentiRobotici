@@ -1,0 +1,8 @@
+res1 <- read.delim("file.txt")
+wilcox.test(res1[,1], res2[,1])
+summary(res1[,1])
+mean
+min
+max
+boxplot
+hist(res1[,1])

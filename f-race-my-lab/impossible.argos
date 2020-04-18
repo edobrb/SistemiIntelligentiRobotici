@@ -8,7 +8,7 @@
   <framework>
     <system threads="0" />
     <experiment length="0"
-                ticks_per_second="60"
+                ticks_per_second="10"
      />
   </framework>
  
@@ -20,12 +20,12 @@
     <lua_controller id="lua">
       <actuators>
         <differential_steering implementation="default" noise_level="0.01"/>
-	<leds implementation="default" medium="leds" />
+		<leds implementation="default" medium="leds" />
       </actuators>
       <sensors>
         <differential_steering implementation="default" noise_level="0.01" />
-        <footbot_light implementation="rot_z_only" show_rays="false" noise_level="0.01" />
-		<footbot_proximity implementation="default" show_rays="false" noise_level="0.01" />
+        <footbot_light implementation="rot_z_only" show_rays="true" noise_level="0.01" />
+		<footbot_proximity implementation="default" show_rays="true" noise_level="0.01" />
 	<positioning implementation="default" noise_level="0.0" />
       </sensors>
       <params script="edoardo-barbieri-controller.lua" />
@@ -38,7 +38,6 @@
   <!-- * Arena configuration * -->
   <!-- *********************** -->
   <arena size="4, 4, 1" center="0,0,0.5" positional_grid_size="8,8,1">
-	<floor id="f" source="image" path="four_spots.png" />
     <box id="bn" size="0.1, 4, 0.2" movable="false">
       <body position="1.9, 0, 0"  orientation="0,0,0" />
     </box>
@@ -53,35 +52,31 @@
     </box>
 
  
-   <distribute>
-      <position method="uniform" min="-1.9,-1.9,0.5" max="1.9,1.9,0.5" />
-      <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="2" max_trials="100">
-        <light id="light"
-           color="yellow"
-           intensity="1"
-           medium="leds"/>
-      </entity>
-    </distribute>
+
     
-    
-    <!-- <foot-bot id="fb">
-      <controller config="lua" />
-      <body position="0,-1,0" orientation="0,0,0" />
-    </foot-bot>-->
+    <box id="box1"  size="0.1, 1, 0.2" movable="false" >
+		<body  orientation="90,0,0" position="0.5,1.25,0" />
+	</box>
+	<box id="box3"  size="0.1, 1, 0.2" movable="false" >
+		<body  orientation="90,0,0" position="0.5,-1.25,0" />
+	</box>
+	<box id="box2"  size="0.1, 2.5, 0.2" movable="false" >
+		<body  orientation="0,0,0" position="0,0,0" />
+	</box>
 
 
     <!-- If you want to place the robot in a random position you may want to use this piece of code -->
-   <distribute>
-      <position method="uniform" min="-1.9,-1.9,0" max="1.9,1.9,0" />
-      <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="20" max_trials="100">
-        <foot-bot id="fb">
-          <controller config="lua" />
-        </foot-bot>
-      </entity>
-    </distribute>
+   <light id="light"
+           position="-1,0,0.5"
+           orientation="0,0,0"
+           color="yellow"
+           intensity="1"
+           medium="leds"/>
    
+   <foot-bot id="fb">
+      <controller config="lua" />
+      <body position="0.5,0,0" orientation="180,0,0" />
+    </foot-bot>
 
   </arena>
  

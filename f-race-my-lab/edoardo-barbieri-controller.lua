@@ -79,7 +79,7 @@ function notFollowingWall(field) for i=1,12 do if i%2 == 1 then robot.leds.set_s
 -- if the length of 'field' * 'm' is not > 'threshold' then the force field will be 0 for the specified schema.
 -- When a schema surpass the threshold then 'on' is called, otherwise 'off'.
 schemas = {
-  { schema = forwardSchema,        m = 0.1, threshold = 0.0 },
+  { schema = forwardSchema,        m = 0.3, threshold = 0.0 },
   { schema = obstacleSchema,       m = 3,   threshold = 0.1, on = avoidingObstacles, off = notAvoidingObstacles },
   { schema = obstacleCircumSchema, m = 3,   threshold = 0.1, on = followingWall, off = notFollowingWall},
   { schema = lightSchema,          m = 4,   threshold = 0.2, on = followingLight, off = notFollowingLight }
@@ -105,9 +105,21 @@ function reset()
 	lightVector = v2(0,0)
 end
 
-
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
 function destroy()
-   
+		distance = (v2(robot.positioning.position.x, robot.positioning.position.y) - v2(1.5, 0)).length
+		log("ABC" .. distance .. "CBA")
 end
 
 
