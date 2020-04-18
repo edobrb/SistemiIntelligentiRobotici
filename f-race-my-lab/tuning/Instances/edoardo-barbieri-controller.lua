@@ -14,9 +14,9 @@ require('vector2')
 MAX_VELOCITY = 10 
 AXIS_L = 0
 zero_field = v2P({angle = 0, length = 0})
-step = 0
+steps = 0
+lightFoundStep = -1
 collisions = 0
-lightReachedStep = 20000
 
 --[[ This function is executed every time you press the 'execute' button ]]
 function init()
@@ -60,7 +60,7 @@ function obstacleSchema(m)
 end
 function obstacleCircumSchema(m)
 	result = -calcAvgProximityVector()
-	result = result.rotate(-math.sign(result.angle) * (math.pi / 2) * 1.01) -- (almost) tangent field force
+	result = result.rotate(-math.sign(result.angle) * (math.pi / 2) * robot.params.ALMOST_TANGENT) -- (almost) tangent field force
 	result = ternary(result.length > 1, result.normalized, result)
 	return result * m
 end
@@ -70,26 +70,18 @@ function lightSchema(m)
 	return result * m
 end
 
---DEBUG CALLBACKS
-function avoidingObstacles(field) robot.leds.set_single_color(13, "red") end
-function notAvoidingObstacles(field) robot.leds.set_single_color(13, "black") end
-function followingLight(field) for i=1,12 do if i%2 == 0 then robot.leds.set_single_color(i, "yellow") end end end
-function notFollowingLight(field) for i=1,12 do if i%2 == 0 then robot.leds.set_single_color(i, "black") end end end
-function followingWall(field) for i=1,12 do if i%2 == 1 then robot.leds.set_single_color(i, "green") end end end
-function notFollowingWall(field) for i=1,12 do if i%2 == 1 then robot.leds.set_single_color(i, "black") end end end
-
 -- SCHEMAS: every schema mest have: a 'schema' function that compute the force field, a multiplier 'm', a threshold 'threshold'
 -- if the length of 'field' * 'm' is not > 'threshold' then the force field will be 0 for the specified schema.
 -- When a schema surpass the threshold then 'on' is called, otherwise 'off'.
 schemas = {
-  { schema = forwardSchema,        m = 0.2716, threshold = 0.0 },
-  { schema = obstacleSchema,       m = 0.29,   threshold = 0.1, on = avoidingObstacles, off = notAvoidingObstacles },
-  { schema = obstacleCircumSchema, m = 1.41,   threshold = 0.1, on = followingWall, off = notFollowingWall},
-  { schema = lightSchema,          m = 0.25,   threshold = 0.2, on = followingLight, off = notFollowingLight }
+  { schema = forwardSchema,  m = robot.params.FORWARD_SCHEMA_M, threshold = 0.0 },
+  { schema = obstacleSchema,  m = robot.params.OBSTACLE_SCHEMA_M,   threshold = robot.params.OBSTACLE_SCHEMA_T},
+  { schema = obstacleCircumSchema, m = robot.params.OBSTACLE_CIRCUM_SCHEMA_M,   threshold =  robot.params.OBSTACLE_CIRCUM_SCHEMA_T},
+  { schema = lightSchema,  m = robot.params.LIGHT_CIRCUM_SCHEMA_M,   threshold = robot.params.LIGHT_CIRCUM_SCHEMA_T }
 }
 	
 function step()
-	step = step + 1
+	steps = steps+ 1
 	fieldVector = runSchemas(schemas)       --run the schemas and find compute the actual force field
 	vel = differentialVelocity(fieldVector) -- convert it to differential velocity
 	
@@ -99,12 +91,19 @@ function step()
 
 	robot.wheels.set_velocity(vel.x, vel.y)
 	
+	if lightDistance() < 0.2 and lightFoundStep == -1 then
+		lightFoundStep = steps
+	end
+	collided = false
 	for i=2,#robot.proximity do
-		if(robot.proximity[i].value > 0.95) then
-			collisions = collisions + 1
+		if(robot.proximity[i].value > 0.99) then
+			collided = true
 		end
 	end
-	
+	if collided then
+		collisions = collisions + 1
+	end
+ 
 end
 
 
@@ -116,9 +115,12 @@ function reset()
 	lightVector = v2(0,0)
 end
 
-
+function lightDistance() 
+	return (v2(robot.positioning.position.x, robot.positioning.position.y) - v2(-3, -3)).length
+end
 function destroy()
-   
+		cost = lightDistance() * 0.5 + ternary(lightFoundStep == -1, 1, lightFoundStep / steps)* 1 + (collisions / steps) * 30
+		log("<cost>" .. cost .. "</cost>")
 end
 
 
@@ -130,12 +132,10 @@ function math.sign(x) return ternary(x < 0, -1, ternary(x > 0, 1, 0)) end
 -- READS FROM SENSORS UTILS
 proximityMaxVector = v2(0,0)
 proximityAvgVector = v2(0,0)
-lightNearVector = v2(0,0)
 lightVector = v2(0,0)
-proximityMaxAlpha = 0.5
-proximityAvgAlpha = 0.5
-lightNearAlpha = 0.5
-lightAlpha = 0.5
+proximityMaxAlpha = robot.params.PROXIMITY_MAX_ALPHA
+proximityAvgAlpha = robot.params.PROXIMITY_AVG_ALPHA
+lightAlpha = robot.params.LIGHT_ALPHA
 function calcMaxProximityVector()
 	sum = v2(0,0)
 	max = 1
@@ -156,18 +156,6 @@ function calcAvgProximityVector()
 	end
 	proximityAvgVector = proximityAvgVector * (1 - proximityAvgAlpha) + sum * proximityAvgAlpha
 	return proximityAvgVector
-end
-function calcMaxLightingVector()
-	sum = v2(0,0)
-	max = 1
-	for i=2,#robot.light do
-		if(robot.light[i].value > robot.light[max].value) then
-			max = i
-		end
-	end
-	sum = sum + v2P({angle = robot.light[max].angle, length = robot.light[max].value})
-	lightNearVector = lightNearVector * (1 - lightNearAlpha) + sum * lightNearAlpha
-	return lightNearVector
 end
 function calcAvgLightingVector()
 	sum = v2(0,0)
