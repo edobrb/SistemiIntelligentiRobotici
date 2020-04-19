@@ -17,15 +17,12 @@
 # Exit with 0 if no error, with 1 in case of error
 ###############################################################################
 
-EXE=/home/edo/Desktop/SistemiIntelligentiRobotici/f-race-my-lab/tuning/Instances/script.sh
-
 CONFIG_ID=$1
 INSTANCE_ID=$2
 SEED=$3
 INSTANCE=$4
 shift 4 || error "Not enough parameters"
 CONFIG_PARAMS=$*
-
-$EXE --run=$INSTANCE --seed=${SEED} ${CONFIG_PARAMS} | grep -o -P "(?<=<cost>).*(?=</cost>)"
+pargos $INSTANCE --seed=${SEED} ${CONFIG_PARAMS} | grep -o -P "(?<=<cost>).*(?=</cost>)"
 exit 0
 

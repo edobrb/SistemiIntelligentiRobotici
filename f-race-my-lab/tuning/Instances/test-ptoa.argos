@@ -28,7 +28,7 @@
         <footbot_light implementation="rot_z_only" show_rays="true" noise_level="0.05" />
 	<positioning implementation="default" noise_level="0.0" />
       </sensors>
-          <params script="/home/edo/Desktop/SistemiIntelligentiRobotici/f-race-my-lab/tuning/Instances/edoardo-barbieri-controller.lua"
+          <params script="/home/edo/Desktop/SistemiIntelligentiRobotici/f-race-my-lab/edoardo-barbieri-controller.lua"
 	 FORWARD_SCHEMA_M="${FORWARD_SCHEMA_M}"
 	 OBSTACLE_SCHEMA_M="${OBSTACLE_SCHEMA_M}"
 	 OBSTACLE_CIRCUM_SCHEMA_M="${OBSTACLE_CIRCUM_SCHEMA_M}"
@@ -39,7 +39,10 @@
      PROXIMITY_MAX_ALPHA="${PROXIMITY_MAX_ALPHA}"
      PROXIMITY_AVG_ALPHA="${PROXIMITY_AVG_ALPHA}"
      LIGHT_ALPHA="${LIGHT_ALPHA}"
-     ALMOST_TANGENT="${ALMOST_TANGENT}" />
+     ALMOST_TANGENT="${ALMOST_TANGENT}" 
+	 
+	 LIGHT_CIRCUM_SCHEMA_M2="${LIGHT_CIRCUM_SCHEMA_M2}"
+	 LIGHT_CIRCUM_SCHEMA_T2="${LIGHT_CIRCUM_SCHEMA_T2}"/>
       </lua_controller>
 
     
