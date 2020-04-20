@@ -38,5 +38,11 @@ PROXIMITY_MAX_ALPHA            "--PROXIMITY_MAX_ALPHA="            r  (0.0, 1.0)
 PROXIMITY_AVG_ALPHA            "--PROXIMITY_AVG_ALPHA="      r  (0.0, 1.0)
 LIGHT_ALPHA            "--LIGHT_ALPHA="            r  (0.0, 1.0)
 ALMOST_TANGENT            "--ALMOST_TANGENT="            r  (0.9, 1.1)
+
+
+OBSTACLE_SCHEMA_M2            "--OBSTACLE_SCHEMA_M2="       r  (0.0, 5.0)
+OBSTACLE_CIRCUM_SCHEMA_M2            "--OBSTACLE_CIRCUM_SCHEMA_M2="       r  (0.0, 5.0)
 LIGHT_CIRCUM_SCHEMA_M2            "--LIGHT_CIRCUM_SCHEMA_M2="       r  (0.0, 5.0)
+OBSTACLE_SCHEMA_T2            "--OBSTACLE_SCHEMA_T2="            r  (0.0, 1.0)
+OBSTACLE_CIRCUM_SCHEMA_T2            "--OBSTACLE_CIRCUM_SCHEMA_T2="           r  (0.0, 1.0)
 LIGHT_CIRCUM_SCHEMA_T2            "--LIGHT_CIRCUM_SCHEMA_T2="            r  (0.0, 1.0)

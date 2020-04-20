@@ -39,6 +39,10 @@ function runSchemas(schemas)
   	elseif field.length == 0 and schemas[i].off ~= nil then
   		schemas[i].off(field)
   	end
+	if schemas[i].inv then
+		field = -field
+	end
+	
   	fieldsSum = fieldsSum + field
   end
   return fieldsSum
@@ -74,11 +78,14 @@ end
 -- if the length of 'field' * 'm' is not > 'threshold' then the force field will be 0 for the specified schema.
 -- When a schema surpass the threshold then 'on' is called, otherwise 'off'.
 schemas = {
-  { schema = forwardSchema,  m = robot.params.FORWARD_SCHEMA_M, threshold = 0.0 },
-  { schema = obstacleSchema,  m = robot.params.OBSTACLE_SCHEMA_M,   threshold = robot.params.OBSTACLE_SCHEMA_T},
-  { schema = obstacleCircumSchema, m = robot.params.OBSTACLE_CIRCUM_SCHEMA_M,   threshold =  robot.params.OBSTACLE_CIRCUM_SCHEMA_T},
-  { schema = lightSchema,  m = robot.params.LIGHT_CIRCUM_SCHEMA_M,   threshold = robot.params.LIGHT_CIRCUM_SCHEMA_T },
-  { schema = lightSchema,  m = robot.params.LIGHT_CIRCUM_SCHEMA_M2,   threshold = robot.params.LIGHT_CIRCUM_SCHEMA_T2 }
+  { schema = forwardSchema,  m = robot.params.FORWARD_SCHEMA_M, threshold = 0.0 , inv=false},
+  { schema = obstacleSchema,  m = robot.params.OBSTACLE_SCHEMA_M,   threshold = robot.params.OBSTACLE_SCHEMA_T, inv=false},
+  { schema = obstacleCircumSchema, m = robot.params.OBSTACLE_CIRCUM_SCHEMA_M,   threshold =  robot.params.OBSTACLE_CIRCUM_SCHEMA_T, inv=false},
+  { schema = lightSchema,  m = robot.params.LIGHT_CIRCUM_SCHEMA_M,   threshold = robot.params.LIGHT_CIRCUM_SCHEMA_T , inv=false},
+  
+  { schema = obstacleSchema,  m = robot.params.OBSTACLE_SCHEMA_M2,   threshold = robot.params.OBSTACLE_SCHEMA_T2, inv=true},
+  { schema = obstacleCircumSchema, m = robot.params.OBSTACLE_CIRCUM_SCHEMA_M2,   threshold =  robot.params.OBSTACLE_CIRCUM_SCHEMA_T2, inv=true},
+  { schema = lightSchema,  m = robot.params.LIGHT_CIRCUM_SCHEMA_M2,   threshold = robot.params.LIGHT_CIRCUM_SCHEMA_T2 , inv=true}
 }
 	
 function step()
@@ -97,7 +104,7 @@ function step()
 	end
 	collided = false
 	for i=2,#robot.proximity do
-		if(robot.proximity[i].value > 0.99) then
+		if(robot.proximity[i].value > 0.98) then
 			collided = true
 		end
 	end
@@ -117,11 +124,16 @@ function reset()
 end
 
 function lightDistance() 
-	return (v2(robot.positioning.position.x, robot.positioning.position.y) - v2(-3, -3)).length
+	return (v2(robot.positioning.position.x, robot.positioning.position.y) - v2(robot.params.TARGET_X, robot.params.TARGET_Y)).length
 end
 function destroy()
-		cost = lightDistance() * 0.5 + ternary(lightFoundStep == -1, 1, lightFoundStep / steps)* 1 + (collisions / steps) * 30
-		log("<cost>" .. cost .. "</cost>")
+		if(lightDistance() < 2) then 
+			cost = lightDistance() * 2  + (collisions) * 0.3 + ternary(lightFoundStep == -1, 1, lightFoundStep / steps)* 1
+			log("<cost>" .. cost .. "</cost>")
+		else
+			log("<cost>" .. "Inf" .. "</cost>")
+		end
+		
 end
 
 

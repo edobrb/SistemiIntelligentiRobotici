@@ -8,4 +8,4 @@
 # Empty lines and comments are ignored.
 
 test-ptoa.argos
-
+#impossible.argos
