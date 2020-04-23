@@ -1,0 +1,26 @@
+#!/bin/bash
+
+SOURCE_ARGOS_FILE=$1
+POSX=()
+POSY=()
+TMP_FILE=$(tempfile)
+argos3 -n -c $SOURCE_ARGOS_FILE | tail -n 20  > $TMP_FILE
+
+TOT=0
+cat $TMP_FILE | while IFS= read -r line; do
+	IFS='|' read -ra ADDR <<< "$line"
+    X1=${ADDR[0]} 
+	Y1=${ADDR[1]} 
+	TOT=$(cat $TMP_FILE | while IFS= read -r line2; do
+		IFS='|' read -ra ADDR2 <<< "$line2"
+		X2=${ADDR2[0]} 
+		Y2=${ADDR2[1]} 
+		DIST=$(echo "($X2 - ($X1)) * ($X2 - ($X1)) + ($Y2 - ($Y1)) * ($Y2 - ($Y1))" | bc)
+		TOT=$(echo "$TOT + $DIST" | bc)
+		echo $TOT
+	done | tail -n 1)
+	echo $TOT
+done | tail -n 1
+
+rm $TMP_FILE 
+

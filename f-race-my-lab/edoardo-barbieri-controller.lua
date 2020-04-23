@@ -82,10 +82,6 @@ schemas = {
   { schema = obstacleSchema,  m = robot.params.OBSTACLE_SCHEMA_M,   threshold = robot.params.OBSTACLE_SCHEMA_T, inv=false},
   { schema = obstacleCircumSchema, m = robot.params.OBSTACLE_CIRCUM_SCHEMA_M,   threshold =  robot.params.OBSTACLE_CIRCUM_SCHEMA_T, inv=false},
   { schema = lightSchema,  m = robot.params.LIGHT_CIRCUM_SCHEMA_M,   threshold = robot.params.LIGHT_CIRCUM_SCHEMA_T , inv=false},
-  
-  { schema = obstacleSchema,  m = robot.params.OBSTACLE_SCHEMA_M2,   threshold = robot.params.OBSTACLE_SCHEMA_T2, inv=true},
-  { schema = obstacleCircumSchema, m = robot.params.OBSTACLE_CIRCUM_SCHEMA_M2,   threshold =  robot.params.OBSTACLE_CIRCUM_SCHEMA_T2, inv=true},
-  { schema = lightSchema,  m = robot.params.LIGHT_CIRCUM_SCHEMA_M2,   threshold = robot.params.LIGHT_CIRCUM_SCHEMA_T2 , inv=true}
 }
 	
 function step()
@@ -104,7 +100,7 @@ function step()
 	end
 	collided = false
 	for i=2,#robot.proximity do
-		if(robot.proximity[i].value > 0.98) then
+		if(robot.proximity[i].value > 0.99) then
 			collided = true
 		end
 	end
@@ -127,12 +123,12 @@ function lightDistance()
 	return (v2(robot.positioning.position.x, robot.positioning.position.y) - v2(robot.params.TARGET_X, robot.params.TARGET_Y)).length
 end
 function destroy()
-		if(lightDistance() < 2) then 
-			cost = lightDistance() * 2  + (collisions) * 0.3 + ternary(lightFoundStep == -1, 1, lightFoundStep / steps)* 1
+		--if(lightDistance() < 2) then 
+			cost = lightDistance() * 2  + (collisions) * 0.5 + ternary(lightFoundStep == -1, 1, lightFoundStep / steps)* 3
 			log("<cost>" .. cost .. "</cost>")
-		else
-			log("<cost>" .. "Inf" .. "</cost>")
-		end
+		--else
+			--log("<cost>" .. "Inf" .. "</cost>")
+		--end
 		
 end
 
